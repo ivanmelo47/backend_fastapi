@@ -36,22 +36,41 @@ class UserService:
     def get_users(self, skip: int = 0, limit: int = 100):
         return self.user_repository.get_users(skip, limit)
 
-    def create_user(self, user: UserCreate):
+    """ def create_user(self, user: UserCreate):
         db_user = self.user_repository.get_user_by_email(user.email)
         if db_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered"
+                detail="Este email ya esta registrado"
             )
         
         db_user = self.user_repository.get_user_by_username(user.username)
         if db_user:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Username already taken"
+                detail="Este username ya esta registrado"
             )
             
+        return self.user_repository.create_user(user) """
+    
+    def create_user(self, user: UserCreate):
+        errores = []
+
+        if self.user_repository.get_user_by_email(user.email):
+            errores.append("Este email ya está registrado")
+        
+        if self.user_repository.get_user_by_username(user.username):
+            errores.append("Este username ya está registrado")
+
+        if errores:
+            # Lanza una sola excepción con todos los errores juntos
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=errores
+            )
+
         return self.user_repository.create_user(user)
+
 
     def update_user(self, user_id: int, user: UserUpdate):
         db_user = self.user_repository.get_user(user_id)

@@ -8,11 +8,20 @@ from app.services.responses import response_success, response_error
 
 router = APIRouter(prefix="/users", tags=["users"])
 
-@router.post("/", response_model=UserInDB, status_code=status.HTTP_201_CREATED)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user_repository = UserRepository(db)
     user_service = UserService(user_repository)
-    return user_service.create_user(user)
+
+    try:
+        created_user = user_service.create_user(user)
+        return response_success(
+            data=UserOut.model_validate(created_user),
+            mensaje=["Usuario creado correctamente"],
+            codigo=status.HTTP_201_CREATED
+        )
+    except HTTPException as e:
+        return response_error(mensaje=e.detail, codigo=e.status_code)
 
 @router.get("/", response_model=list[UserInDB])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -33,7 +42,7 @@ def read_user(uuid: str, db: Session = Depends(get_db)):
         user = user_service.get_user_by_uuid(uuid)
         return response_success(
             data=UserOut.model_validate(user),
-            mensaje="Usuario obtenido correctamente"
+            mensaje=["Usuario obtenido correctamente"]
         )
     except HTTPException as e:
         return response_error(mensaje=e.detail, codigo=e.status_code)
