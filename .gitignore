@@ -1,0 +1,32 @@
+# Archivos de caché de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+venv/
+# env/
+# .venv/
+
+# Archivos de caché de IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos generados por el sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de caché y logs
+*.log
+*.cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+.env
+
+# Directorio de assets o archivos temporales (si usas alguno)
+# /tmp/
+# /static/
