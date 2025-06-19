@@ -28,7 +28,7 @@ class UserUpdate(BaseModel):
         return v
 
 class UserInDB(UserBase):
-    # id: int
+    id: int
     uuid: str
     hashed_password: str
     created_at: datetime

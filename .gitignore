@@ -30,3 +30,4 @@ htmlcov/
 # Directorio de assets o archivos temporales (si usas alguno)
 # /tmp/
 # /static/
+backend_fastapi.zip

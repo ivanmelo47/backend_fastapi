@@ -20,17 +20,23 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     user_service = UserService(user_repository)
     return user_service.get_users(skip, limit)
 
-@router.get("/test-error")
+""" @router.get("/test-error")
 def test_error():
-    return response_error(mensaje="No se pudo procesar tu solicitud", codigo=422)
+    return response_error(mensaje="No se pudo procesar tu solicitud", codigo=422) """
 
 @router.get("/uuid/{uuid}")
 def read_user(uuid: str, db: Session = Depends(get_db)):
     user_repository = UserRepository(db)
     user_service = UserService(user_repository)
 
-    user = user_service.get_user_by_uuid(uuid)
-    return response_success(data=UserOut.model_validate(user), mensaje="Usuario obtenido correctamente")
+    try:
+        user = user_service.get_user_by_uuid(uuid)
+        return response_success(
+            data=UserOut.model_validate(user),
+            mensaje="Usuario obtenido correctamente"
+        )
+    except HTTPException as e:
+        return response_error(mensaje=e.detail, codigo=e.status_code)
 
 @router.get("/{user_id}", response_model=UserInDB)
 def read_user(user_id: int, db: Session = Depends(get_db)):

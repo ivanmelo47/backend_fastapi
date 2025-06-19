@@ -20,7 +20,7 @@ class UserService:
         if not db_user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
+                detail="Usuario no encontrado"
             )
         return db_user
 
