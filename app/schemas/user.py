@@ -28,9 +28,18 @@ class UserUpdate(BaseModel):
         return v
 
 class UserInDB(UserBase):
-    id: int
+    # id: int
+    uuid: str
+    hashed_password: str
+    created_at: datetime
+    updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+    
+class UserOut(UserBase):
+    uuid: str
     created_at: datetime
     updated_at: Optional[datetime] = None
-
     class Config:
         from_attributes = True
