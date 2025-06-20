@@ -4,6 +4,7 @@ from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from app.api.v1.api import router as api_router
 from app.database import engine, Base
 from app.services.responses import response_error
+from app.exceptions.handlers import validation_exception_handler
 
 app = FastAPI(
     title="FastAPI MySQL CRUD",
@@ -11,21 +12,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    mensajes = []
-    for error in exc.errors():
-        msg = error.get('msg', '')
-        # Si el mensaje tiene coma, toma solo la parte después de la coma (tu mensaje personalizado)
-        if ',' in msg:
-            msg = msg.split(',', 1)[1].strip()
-        mensajes.append(msg)
-
-    return response_error(
-        codigo=422,
-        mensaje=mensajes,
-        data=None
-    )
+# Registrar el manejador
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 # Crear tablas en la base de datos (solo para desarrollo)
 Base.metadata.create_all(bind=engine)

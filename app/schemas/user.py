@@ -4,21 +4,24 @@ from typing import Optional
 import re
 
 class UserBase(BaseModel):
-    username: str = Field(..., max_length=50)
-    email: str
+    username: str = Field(..., max_length=50, description="Nombre de usuario obligatorio (3-50 caracteres)")
+    email: str = Field(..., description="Correo electrónico obligatorio")
     full_name: Optional[str] = Field(None, max_length=100)
 
     @field_validator('username')
     @classmethod
     def validar_username(cls, v):
+        if not v:  # Esto no se ejecutará si el campo falta (Pydantic lo maneja antes)
+            raise ValueError("El nombre de usuario no puede estar vacío")
         if len(v) < 3:
-            raise ValueError("El nombre de usuario debe tener al menos 3 caracteres Bro")
+            raise ValueError("El nombre de usuario debe tener al menos 3 caracteres")
         return v
 
     @field_validator('email')
     @classmethod
     def validar_email(cls, v):
-        # Valida formato básico de email
+        if not v:  # Esto no se ejecutará si el campo falta
+            raise ValueError("El correo electrónico no puede estar vacío")
         if not re.match(r"^[^@]+@[^@]+\.[^@]+$", v):
             raise ValueError("El correo electrónico no es válido")
         return v
