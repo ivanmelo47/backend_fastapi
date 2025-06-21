@@ -31,3 +31,5 @@ htmlcov/
 # /tmp/
 # /static/
 backend_fastapi.zip
+
+alembic/versions/*.py

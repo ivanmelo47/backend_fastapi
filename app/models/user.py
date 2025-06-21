@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, text
 from sqlalchemy.sql import func
 from app.database import Base
 from sqlalchemy.dialects.mysql import CHAR
@@ -15,3 +15,8 @@ class User(Base):
     hashed_password = Column(String(255), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    
+    # Nuevos campos
+    status = Column(Boolean, nullable=False, server_default=text("false"))
+    rol = Column(String(20), nullable=False, server_default=text("'user'"))
+    deleted_at = Column(DateTime, nullable=True)
