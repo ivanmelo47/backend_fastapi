@@ -1,3 +1,5 @@
+# app/api/v1/endpoints/users.py
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.schemas.user import UserCreate, UserUpdate, UserInDB, UserOut

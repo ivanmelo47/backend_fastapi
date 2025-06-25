@@ -1,3 +1,5 @@
+# app/services/user.py
+
 from fastapi import HTTPException, status
 from app.repositories.user import UserRepository
 from app.schemas.user import UserCreate, UserUpdate, UserInDB
@@ -35,23 +37,6 @@ class UserService:
 
     def get_users(self, skip: int = 0, limit: int = 100):
         return self.user_repository.get_users(skip, limit)
-
-    """ def create_user(self, user: UserCreate):
-        db_user = self.user_repository.get_user_by_email(user.email)
-        if db_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Este email ya esta registrado"
-            )
-        
-        db_user = self.user_repository.get_user_by_username(user.username)
-        if db_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Este username ya esta registrado"
-            )
-            
-        return self.user_repository.create_user(user) """
     
     def create_user(self, user: UserCreate):
         errores = []
