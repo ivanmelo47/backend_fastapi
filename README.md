@@ -33,6 +33,31 @@ app/
 ```
 
 ---
+## 📝 Configuracion inicial venv
+
+Crear entorno virtual venv en linux
+```bash
+python3 -m venv venv
+```
+Activar entorno virtual venv en linux
+```bash
+source venv/bin/activate
+```
+
+Crear entorno virtual venv en windows
+```bash
+python -m venv nombre_del_entorno
+```
+Activar entorno virtual venv en windows
+```bash
+venv\Scripts\activate
+```
+
+
+
+
+
+---
 
 ## 🔐 Autenticación
 
