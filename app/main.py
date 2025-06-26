@@ -16,7 +16,7 @@ app = FastAPI(
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 # Crear tablas en la base de datos (solo para desarrollo)
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app.include_router(api_router, prefix="/api/v1")
 
