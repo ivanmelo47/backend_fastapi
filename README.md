@@ -46,7 +46,7 @@ source venv/bin/activate
 
 Crear entorno virtual venv en windows
 ```bash
-python -m venv nombre_del_entorno
+python -m venv venv
 ```
 Activar entorno virtual venv en windows
 ```bash
