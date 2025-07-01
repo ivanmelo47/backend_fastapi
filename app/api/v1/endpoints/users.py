@@ -37,9 +37,10 @@ def create_user(
 def read_users(
     skip: int = 0,
     limit: int = 100,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    current_user=Depends(admin_required),
 ):
-    users = user_service.get_users(skip, limit)
+    users = user_service.get_users(skip, limit, current_user=current_user)
     # Retornamos lista con el formato uniforme y modelos Pydantic
     return response_success(
         data=[UserOut.model_validate(user) for user in users],
@@ -89,7 +90,7 @@ def update_user(
         updated_user = user_service.update_user(user_id, user_update)
         return response_success(
             data=UserOut.model_validate(updated_user),
-            mensaje=["Usuario actualizado correctamente"],
+            mensaje=["Usuario actualizado correctamente padrino"],
             codigo=status.HTTP_200_OK,
         )
     except HTTPException as e:

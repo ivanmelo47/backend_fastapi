@@ -15,7 +15,7 @@ class UserService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail={
                     "codigo": status.HTTP_404_NOT_FOUND,
-                    "mensaje": ["Usuario no encontrado padrino"],
+                    "mensaje": ["Usuario no encontrado"],
                     "data": None
                 }
             )
@@ -39,7 +39,14 @@ class UserService:
             )
         return db_user
 
-    def get_users(self, skip: int = 0, limit: int = 100):
+    def get_users(self, skip: int = 0, limit: int = 100, current_user=None):
+        # Si es admin, solo puede ver usuarios con rol 'user'
+        if current_user.rol == "admin":
+            return self.user_repository.get_users_filtered(
+                skip=skip,
+                limit=limit,
+                exclude_roles=["admin"]
+            )
         return self.user_repository.get_users(skip, limit)
     
     def create_user(self, user: UserCreate):
@@ -62,6 +69,17 @@ class UserService:
 
     def update_user(self, user_id: int, user: UserUpdate):
         db_user = self.get_user(user_id)  # ✅ Usa validación centralizada
+        
+        # ⛔ Validar si el usuario está inactivo (status = 0)
+        if db_user.status == 0:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "codigo": status.HTTP_403_FORBIDDEN,
+                    "mensaje": ["No se puede editar un usuario que no está activo"],
+                    "data": None
+                }
+            )
 
         errores = []
 

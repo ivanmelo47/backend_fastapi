@@ -59,6 +59,17 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
             detail="Usuario no encontrado",
             headers={"WWW-Authenticate": "Bearer"},
         )
+        
+    # 👇 Validar si el usuario está activo
+    if user.status == 0:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "codigo": status.HTTP_403_FORBIDDEN,
+                "mensaje": ["Tu cuenta está inactiva. No puedes acceder al sistema."],
+                "data": None
+            }
+        )
 
     return user
 

@@ -1,6 +1,7 @@
 # app/config.py
 
 from pydantic_settings import BaseSettings
+from zoneinfo import ZoneInfo
 
 class Settings(BaseSettings):
     MYSQL_USER: str
@@ -17,6 +18,10 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+        
+    @property
+    def tz(self) -> ZoneInfo:
+        return ZoneInfo(self.TIMEZONE)
 
     @property
     def DATABASE_URL(self):
