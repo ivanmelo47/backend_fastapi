@@ -3,6 +3,7 @@
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, text
 from sqlalchemy.sql import func
 from app.database import Base
+from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.mysql import CHAR
 import uuid as uuid_lib
 
@@ -22,3 +23,6 @@ class User(Base):
     status = Column(Boolean, nullable=False, server_default=text("false"))
     rol = Column(String(20), nullable=False, server_default=text("'user'"))
     deleted_at = Column(DateTime, nullable=True)
+    
+    # 🔧 Relación diferida (por nombre)
+    tokens = relationship("app.models.token.Token", back_populates="usuario", cascade="all, delete")

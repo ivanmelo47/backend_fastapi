@@ -11,7 +11,7 @@ load_dotenv()
 # Importa tu Base y modelos para que Alembic los detecte
 from app.database import Base
 # from app.models import user  # Importa todos tus modelos aquí
-from app.models import user
+from app.models import user, token
 
 # Alembic config
 config = context.config

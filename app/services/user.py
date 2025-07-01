@@ -13,7 +13,11 @@ class UserService:
         if not db_user:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
+                detail={
+                    "codigo": status.HTTP_404_NOT_FOUND,
+                    "mensaje": ["Usuario no encontrado padrino"],
+                    "data": None
+                }
             )
         return db_user
     
@@ -56,30 +60,33 @@ class UserService:
 
         return self.user_repository.create_user(user)
 
-
     def update_user(self, user_id: int, user: UserUpdate):
-        db_user = self.user_repository.get_user(user_id)
-        if not db_user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
-            )
-            
-        if user.email:
+        db_user = self.get_user(user_id)  # ✅ Usa validación centralizada
+
+        errores = []
+
+        if user.username is not None:
+            existing_user = self.user_repository.get_user_by_username(user.username)
+            if existing_user and existing_user.id != user_id:
+                errores.append("Este username ya está registrado")
+
+        if user.email is not None:
             existing_user = self.user_repository.get_user_by_email(user.email)
             if existing_user and existing_user.id != user_id:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Email already registered"
-                )
-                
+                errores.append("Este email ya está registrado")
+
+        if errores:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "codigo": status.HTTP_403_FORBIDDEN,
+                    "mensaje": errores,
+                    "data": None
+                }
+            )
+
         return self.user_repository.update_user(user_id, user)
 
     def delete_user(self, user_id: int):
-        db_user = self.user_repository.get_user(user_id)
-        if not db_user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found"
-            )
+        self.get_user(user_id)  # ✅ Solo llama, si no existe, lanzará la excepción ya
         return self.user_repository.delete_user(user_id)

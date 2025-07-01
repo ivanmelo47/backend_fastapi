@@ -7,6 +7,8 @@ from app.services.user import UserService
 from app.repositories.user import UserRepository
 from app.database import get_db
 from app.services.responses import response_success, response_error
+from app.core.security import admin_required
+from app.core.security import verificar_acceso_usuario
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -80,7 +82,8 @@ def read_user_by_id(
 def update_user(
     user_id: int,
     user_update: UserUpdate,
-    user_service: UserService = Depends(get_user_service)
+    user_service: UserService = Depends(get_user_service),
+    current_user=Depends(verificar_acceso_usuario),  # ✅ Pasas solo la función
 ):
     try:
         updated_user = user_service.update_user(user_id, user_update)
@@ -90,7 +93,9 @@ def update_user(
             codigo=status.HTTP_200_OK,
         )
     except HTTPException as e:
-        return response_error(mensaje=e.detail, codigo=e.status_code)
+        raise e
+        #return response_error(mensaje=e.detail, codigo=e.status_code)
+    
 
 @router.delete("/id/{user_id}", status_code=status.HTTP_200_OK)
 def delete_user(
@@ -105,4 +110,5 @@ def delete_user(
             codigo=status.HTTP_200_OK,
         )
     except HTTPException as e:
-        return response_error(mensaje=e.detail, codigo=e.status_code)
+        raise e
+        #return response_error(mensaje=e.detail, codigo=e.status_code)
