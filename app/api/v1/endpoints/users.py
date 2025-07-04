@@ -79,7 +79,7 @@ def read_user_by_id(
     except HTTPException as e:
         return response_error(mensaje=e.detail, codigo=e.status_code)
 
-@router.put("/id/{user_id}", status_code=status.HTTP_200_OK)
+"""@router.put("/id/{user_id}", status_code=status.HTTP_200_OK)
 def update_user(
     user_id: int,
     user_update: UserUpdate,
@@ -94,9 +94,22 @@ def update_user(
             codigo=status.HTTP_200_OK,
         )
     except HTTPException as e:
-        raise e
+        raise e """
         #return response_error(mensaje=e.detail, codigo=e.status_code)
-    
+        
+@router.put("/id/{user_id}", status_code=status.HTTP_200_OK)
+def update_user(
+    user_id: int,
+    user_update: UserUpdate,
+    user_service: UserService = Depends(get_user_service),
+    current_user=Depends(verificar_acceso_usuario),
+):
+    updated_user = user_service.update_user(user_id, user_update)
+    return response_success(
+        data=UserOut.model_validate(updated_user),
+        mensaje=["Usuario actualizado correctamente"],
+        codigo=status.HTTP_200_OK,
+    )
 
 @router.delete("/id/{user_id}", status_code=status.HTTP_200_OK)
 def delete_user(
